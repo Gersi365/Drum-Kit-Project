@@ -1,4 +1,4 @@
-// 1. Funksioni që luan tingullin
+// 1. Funksioni që luan tingullin (Vegla)
 function makeSound(key) {
   switch (key) {
     case "w":
@@ -22,18 +22,44 @@ function makeSound(key) {
     case "l":
       new Audio('sounds/kick-bass.mp3').play();
       break;
+    default:
+      console.log("U shtyp një tast tjetër: " + key);
   }
 }
 
-// 2. Kapja e klikimeve (Click) - Supozojmë se butonat kanë klasën "drum"
+// 2. Funksioni për Animacionin (Përdor Callback-un e setTimeout)
+function buttonAnimation(currentKey) {
+  // Gjejmë butonin që korrespondon me klasën (p.sh. .w, .a, .s)
+  var activeButton = document.querySelector("." + currentKey);
+
+  // Kontrollojmë nëse butoni ekziston para se t'i shtojmë klasën
+  if (activeButton) {
+    activeButton.classList.add("pressed");
+
+    // Ky është Callback-u që "kthehet" pas 100 milisekondash
+    setTimeout(function() {
+      activeButton.classList.remove("pressed");
+    }, 100);
+  }
+}
+
+// 3. EVENTET: Lidhja e veprimeve me funksionet
+
+// A. Për klikimet me mi (Click Event)
 var buttons = document.querySelectorAll(".drum");
+
 for (var i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener("click", function() {
-    makeSound(this.innerHTML); // merr shkronjën nga brenda butonit (w, a, s, etj)
+    var buttonInnerHTML = this.innerHTML;
+
+    makeSound(buttonInnerHTML);      // Ekzekutohet menjëherë
+    buttonAnimation(buttonInnerHTML); // Ekzekutohet menjëherë
   });
 }
 
-// 3. Kapja e tastierës (Keydown)
+// B. Për shtypjen e tastierës (Keydown Event)
 document.addEventListener("keydown", function(event) {
-  makeSound(event.key); // merr shkronjën që shtype në tastierë
+  // 'event.key' na jep shkronjën e shtypur (w, a, s, etj.)
+  makeSound(event.key);
+  buttonAnimation(event.key);
 });
